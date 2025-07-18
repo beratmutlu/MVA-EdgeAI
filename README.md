@@ -24,7 +24,7 @@ This project addresses real-time visual perception tasks on edge devices within 
 ### 🔹 Specialized Tasks on Edge
 
 #### 1. Color Detection
-- Uses YOLOv5 for vehicle detection
+- Uses YOLOv8 for vehicle detection
 - Extracts image regions and filters with RGBA masking
 - Performs K-Means clustering for dominant color detection
 - Maps RGB to human-readable XKCD color names
