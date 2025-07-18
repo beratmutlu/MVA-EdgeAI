@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ML Classification Summary</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="main-grid">
+    <div class="left-panel">
+      <h1>ML Object Classification Summary</h1>
+
+      <section>
+        <h2>Video Summary</h2>
+        <div id="summary" class="card"></div>
+      </section>
+
+      <section>
+        <h2>Chart Controls</h2>
+        <div class="selector-group">
+          <label for="chartSelector">Single Chart View:</label>
+          <select id="chartSelector">
+            <option value="">None</option>
+          </select>
+        </div>
+
+        <div class="selector-group">
+          <label for="compareSelector">Compare Two Charts:</label>
+          <select id="compareSelector" multiple size="6">
+            <option value="">None</option>
+          </select>
+        </div>
+      </section>
+    </div>
+
+    <div class="right-panel">
+      <section>
+        <h2>Selected Chart</h2>
+        <div id="charts"></div>
+      </section>
+    </div>
+  </div>
+
+  <section>
+    <h2>Compare Two Charts</h2>
+    <div class="compare-row" id="compareCharts"></div>
+  </section>
+
+  <script>
+    let videoData;
+    const chartRegistry = {};
+
+    async function fetchData() {
+      try {
+        const res = await fetch("data.json");
+        videoData = await res.json();
+        document.getElementById("summary").innerHTML = `
+          <table>
+            <tr><th>Video</th><td>${videoData.video_path}</td></tr>
+            <tr><th>Total Frames</th><td>${videoData.total_frames}</td></tr>
+            <tr><th>Average FPS</th><td>${videoData.average_fps.toFixed(2)}</td></tr>
+          </table>
+        `;
+        renderCharts();
+      } catch (error) {
+        document.getElementById("summary").innerHTML = "<p style='color:red;'>Failed to load data.json</p>";
+        console.error("Error loading data:", error);
+      }
+    }
+
+    function renderCharts() {
+      const chartSelector = document.getElementById("chartSelector");
+      const compareSelector = document.getElementById("compareSelector");
+      const chartsContainer = document.getElementById("charts");
+      const compareContainer = document.getElementById("compareCharts");
+
+      const frameIds = videoData.frames.map(f => f.frame_id);
+      const inference = videoData.frames.map(f => f.inference_time_ms);
+      const cpu = videoData.frames.map(f => f.cpu_percent);
+      const ram = videoData.frames.map(f => f.ram_usage_mb);
+
+      const labelStats = {};
+      const labelOverTime = {};
+
+      videoData.frames.forEach(frame => {
+        const frameIndex = frame.frame_id;
+        frame.predictions.forEach(p => {
+          if (!labelStats[p.label]) {
+            labelStats[p.label] = { totalConfidence: 0, count: 0 };
+          }
+          labelStats[p.label].totalConfidence += p.confidence;
+          labelStats[p.label].count++;
+
+          if (!labelOverTime[p.label]) {
+            labelOverTime[p.label] = [];
+          }
+          labelOverTime[p.label][frameIndex] = p.confidence;
+        });
+      });
+
+      const labels = Object.keys(labelStats);
+      const avgConfidence = labels.map(l => labelStats[l].totalConfidence / labelStats[l].count);
+      const labelCounts = labels.map(l => labelStats[l].count);
+
+      const staticCharts = [
+        { id: 'inferenceChart', label: 'Inference Time (ms)', data: inference, color: 'blue' },
+        { id: 'cpuChart', label: 'CPU Usage (%)', data: cpu, color: 'green' },
+        { id: 'ramChart', label: 'RAM Usage (MB)', data: ram, color: 'red' },
+        { id: 'avgConfidenceChart', label: 'Average Confidence by Label', data: avgConfidence, labels, type: 'bar', color: 'orange' },
+        { id: 'labelFrequencyChart', label: 'Prediction Frequency by Label', data: labelCounts, labels, type: 'bar', color: 'purple' }
+      ];
+
+      staticCharts.forEach(({ id, label, data, labels: xLabels = frameIds, type = 'line', color }) => {
+        const canvas = document.createElement("canvas");
+        const wrapper = document.createElement("div");
+        wrapper.className = "chart-container";
+        wrapper.id = `wrap_${id}`;
+        canvas.id = id;
+        wrapper.appendChild(canvas);
+        chartsContainer.appendChild(wrapper);
+
+        chartRegistry[id] = new Chart(canvas, {
+          type,
+          data: {
+            labels: xLabels,
+            datasets: [{ label, data, borderColor: color, backgroundColor: color, tension: 0.3, fill: false }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+              x: { title: { display: true, text: 'Frame ID' } },
+              y: { title: { display: true, text: label } }
+            }
+          }
+        });
+
+        const opt = new Option(label, `wrap_${id}`);
+        chartSelector.appendChild(opt);
+      });
+
+      Object.entries(labelOverTime).forEach(([label, data]) => {
+        const id = `chart_${label}`;
+        const wrapper = document.createElement("div");
+        wrapper.className = "chart-container";
+        wrapper.id = `wrap_${id}`;
+        const canvas = document.createElement("canvas");
+        canvas.id = id;
+        wrapper.appendChild(canvas);
+        chartsContainer.appendChild(wrapper);
+
+        chartRegistry[id] = new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels: frameIds,
+            datasets: [{
+              label: `Confidence Over Time: ${label}`,
+              data: data.map(c => c || null),
+              borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+              tension: 0.3,
+              fill: false
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+              x: { title: { display: true, text: 'Frame ID' } },
+              y: { title: { display: true, text: 'Confidence' }, min: 0, max: 1 }
+            }
+          }
+        });
+
+        chartSelector.appendChild(new Option(`Confidence Over Time: ${label}`, `wrap_${id}`));
+        compareSelector.appendChild(new Option(`Confidence Over Time: ${label}`, id));
+      });
+
+      chartSelector.addEventListener("change", () => {
+        document.querySelectorAll('.chart-container').forEach(div => div.classList.remove('active'));
+        const selected = chartSelector.value;
+        if (selected) document.getElementById(selected)?.classList.add("active");
+      });
+
+      compareSelector.addEventListener("change", () => {
+        const selected = Array.from(compareSelector.selectedOptions).map(o => o.value).filter(Boolean);
+        compareContainer.innerHTML = "";
+        if (selected.length === 2) {
+          selected.forEach(id => {
+            const srcChart = chartRegistry[id];
+            if (!srcChart) return;
+            const canvas = document.createElement("canvas");
+            compareContainer.appendChild(canvas);
+            new Chart(canvas, {
+              type: 'line',
+              data: JSON.parse(JSON.stringify(srcChart.data)),
+              options: JSON.parse(JSON.stringify(srcChart.options))
+            });
+          });
+        }
+      });
+    }
+
+    fetchData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    margin: 20px;
+    color: #333;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  
+  .main-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .left-panel {
+    flex: 1 1 400px;
+    max-width: 480px;
+  }
+  
+  .right-panel {
+    flex: 2 1 600px;
+    min-width: 400px;
+  }
+  
+  section {
+    margin-top: 32px;
+  }
+  
+  section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    color: #444;
+  }
+  
+  .card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .card table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .card th {
+    text-align: left;
+    padding-right: 12px;
+    color: #555;
+  }
+  
+  .card td {
+    padding: 4px 0;
+    color: #222;
+  }
+  
+  select {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+  }
+  
+  .chart-container {
+    display: none;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .chart-container.active {
+    display: block;
+  }
+  
+  .compare-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .compare-row canvas {
+    width: 100%;
+    max-width: 48%;
+    height: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+  }
+  
+  .selector-group {
+    margin-top: 20px;
+    padding: 12px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  
+  .selector-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #555;
+    font-weight: 600;
+  }
+  
+  .selector-group select {
+    width: 100%;
+  }
+  
