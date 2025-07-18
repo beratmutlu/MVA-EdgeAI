@@ -14,7 +14,7 @@ This project addresses real-time visual perception tasks on edge devices within 
 ## 🎯 Goals
 
 - Implement object attribute recognition (color & direction) on edge devices
-- Design an interactive frontend for monitoring real-time outputs
+- Design an interactive frontend for monitoring outputs
 - Ensure modularity for easy integration into federated learning workflows
 
 ---
