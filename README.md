@@ -45,7 +45,6 @@ A browser-based GUI to interactively analyze system outputs.
 - Load predictions from `.json` files
 - Visualize object class frequency and predictions over time
 - Inspect system stats (CPU, memory) during execution
-- Dynamic filtering, hover-inspection, and live chart updates
 
 #### Tech Stack:
 - `Chart.js` for plotting
