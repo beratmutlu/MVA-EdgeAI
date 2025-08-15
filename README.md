@@ -91,16 +91,13 @@ python main.py --video path/to/video --model path/to/yolov8.pt
 ```
 
 **Arguments**
-- `--video` — Path to a video file (e.g., `sample.mp4`) or camera index (`0` for default webcam).  
+- `--video` — Path to a video file (e.g., `sample.mp4`).  
   Default: `"vidoe2.webm"` (rename if needed).  
 - `--model` — Path to YOLOv8 model weights. Default: `yolov8n.pt`.
 
 **Examples**
 ```bash
-# 1) Use webcam
-python main.py --video 0
-
-# 2) Use sample video
+# Use sample video
 python main.py --video vidoe2.webm --model yolov8n.pt
 ```
 
