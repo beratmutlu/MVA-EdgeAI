@@ -2,7 +2,7 @@
 
 **Group Members**
 - Berat Emir Mutlu  
-- Kazım Efe Koçyiğit
+- Kazim Efe Koçyiğit
 
 ---
 
