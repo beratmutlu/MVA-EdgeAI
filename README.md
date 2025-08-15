@@ -1,62 +1,116 @@
-# EdgeAI: Visual Perception Tasks on Edge Devices - Group 2
+# EdgeAI: Vehicle Tracking & Visualization — Group 2
 
-**Group Members:**  
+**Group Members**
 - Berat Emir Mutlu  
 - Kazım Efe Koçyiğit
 
-## 📌 Project Overview
+---
 
-This project addresses real-time visual perception tasks on edge devices within a **Federated Learning** framework. It includes:
+## 📌 Overview
 
-- Specialized edge-side tasks: **Color Detection** and **Direction Detection**
-- A **web-based visualization tool** for inspecting and analyzing model predictions
+This project performs **real-time vehicle detection and tracking** on video input using YOLOv8.  
+It includes:
+- A **vehicle tracking pipeline** in Python (OpenCV + YOLOv8).
+- A **web-based visualization interface** to display results.
 
-## 🎯 Goals
-
-- Implement object attribute recognition (color & direction) on edge devices
-- Design an interactive frontend for monitoring outputs
-- Ensure modularity for easy integration into federated learning workflows
+The code is designed to be extendable for **color detection**, **direction detection**, and possible **Federated Learning** integration.
 
 ---
 
-## 🧠 Core Features
+## 🧠 Current Features
 
-### 🔹 Specialized Tasks on Edge
+### Vehicle Detection & Tracking
+- YOLOv8 for detecting vehicles in video frames.
+- Tracking across frames using `tracker.py` + SORT algorithm.
+- Real-time display with bounding boxes and labels.
 
-#### 1. Color Detection
-- Uses YOLOv8 for vehicle detection
-- Extracts image regions and filters with RGBA masking
-- Performs K-Means clustering for dominant color detection
-- Maps RGB to human-readable XKCD color names
-- Updates labels every second
-
-#### 2. Direction Detection
-- Calculates motion vectors based on frame-to-frame centers
-- Converts vectors to 8 cardinal directions (N, NE, E, etc.)
-- Updates every 2 seconds
+### Web Visualization
+- Static HTML/CSS/JS interface to load and display prediction data from `.json` files.
+- Data table & chart visualization (requires manually prepared JSON).
 
 ---
 
-### 🔹 Web-Based Visualization Tool
+## 🚀 Quick Start
 
-A browser-based GUI to interactively analyze system outputs.
+### 1) Requirements
 
-#### Features:
-- Load predictions from `.json` files
-- Visualize object class frequency and predictions over time
-- Inspect system stats (CPU, memory) during execution
+- **Python** ≥ 3.8  
+- **Packages**:  
+  `opencv-python`, `numpy`, `ultralytics`  
+- **Browser**: Any modern browser (Chrome/Firefox/Edge)  
+- **VS Code** with **Live Server** extension (for visualization)
 
-#### Tech Stack:
-- `Chart.js` for plotting
-- `HTML/CSS/JavaScript` frontend
-- Lightweight JSON-driven architecture
-
+Install Python dependencies:
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -U pip
+pip install opencv-python numpy ultralytics
+```
 
 ---
 
-## 🚀 Getting Started
+### 2) Project Structure
 
-### Requirements
-- Python ≥ 3.8
-- OpenCV, NumPy, scikit-learn (for edge tasks)
-- Modern browser (for web GUI)
+```
+EdgeAI-Visual-Perception/
+│
+├─ Specialization/                # Core detection/tracking pipeline
+│  ├─ calcDirection.py            #  direction detection
+│  ├─ cropVehicle.py               # Extracts vehicle ROIs
+│  ├─ detectColor.py               # color detection
+│  ├─ detector.py                  # YOLO detection logic
+│  ├─ main.py                      # Entry point
+│  ├─ renderer.py                  # Renders labels/boxes on frames
+│  ├─ sort.py                      # SORT tracking implementation
+│  ├─ tracker.py                   # Tracker initialization/update
+│  ├─ utils.py                     # Utility functions
+│  ├─ vidoe2.webm                  # Sample video 
+│  └─ yolov8n.pt                   # YOLOv8 weights
+│
+├─ Visualisation/                  # Web-based visualization
+│  ├─ assets/                      # Images/icons/etc.
+│  ├─ data.json                     # Example data file
+│  ├─ index.html                    # Main HTML page
+│  ├─ script.js                     # Logic for loading/displaying data
+│  └─ style.css                     # Styling for visualization
+│
+├─ Documentation.pdf                # Additional documentation
+└─ README.md
+```
+
+---
+
+## ▶️ Run the Vehicle Tracker
+
+Currently, the only supported arguments are:
+
+```bash
+python main.py --video path/to/video --model path/to/yolov8.pt
+```
+
+**Arguments**
+- `--video` — Path to a video file (e.g., `sample.mp4`) or camera index (`0` for default webcam).  
+  Default: `"vidoe2.webm"` (rename if needed).  
+- `--model` — Path to YOLOv8 model weights. Default: `yolov8n.pt`.
+
+**Examples**
+```bash
+# 1) Use webcam
+python main.py --video 0
+
+# 2) Use sample video
+python main.py --video vidoe2.webm --model yolov8n.pt
+```
+
+---
+
+## 📊 Visualize Results (Web GUI)
+
+### Steps (VS Code Live Server)
+1. Open `Visualisation/` in VS Code.  
+2. Install the **Live Server** extension.  
+3. Right-click `index.html` → **Open with Live Server**.  
+4. Double-click `index.html` if browser did not launch automatically.
+---
