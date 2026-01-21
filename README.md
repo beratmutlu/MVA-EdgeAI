@@ -57,7 +57,7 @@ pip install opencv-python numpy ultralytics
 EdgeAI-Visual-Perception/
 │
 ├─ Specialization/                # Core detection/tracking pipeline
-│  ├─ calcDirection.py            #  direction detection
+│  ├─ calcDirection.py             # direction detection
 │  ├─ cropVehicle.py               # Extracts vehicle ROIs
 │  ├─ detectColor.py               # color detection
 │  ├─ detector.py                  # YOLO detection logic
@@ -69,8 +69,8 @@ EdgeAI-Visual-Perception/
 │  ├─ vidoe2.webm                  # Sample video 
 │  └─ yolov8n.pt                   # YOLOv8 weights
 │
-├─ Visualisation/                  # Web-based visualization
-│  ├─ assets/                      # Images/icons/etc.
+├─ docs/                           # Web-based visualization
+│  ├─ assets/                       # Images/icons/etc.
 │  ├─ data.json                     # Example data file
 │  ├─ index.html                    # Main HTML page
 │  ├─ script.js                     # Logic for loading/displaying data
