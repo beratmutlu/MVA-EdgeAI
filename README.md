@@ -1,6 +1,5 @@
-# EdgeAI: Vehicle Tracking & Visualization — Group 2
+# EdgeAI: Vehicle Tracking & Visualization
 
-**Group Members**
 - Berat Emir Mutlu  
 - Kazim Efe Koçyiğit
 
